@@ -86,10 +86,12 @@ pub struct StringCp1252(pub String);
 
 impl Serialize for StringCp1252 {
     fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-        let mut seq = serializer.serialize_seq(Some(self.0.len()))?;
+        serializer.serialize_str(&self.0)
+
+        /*let mut seq = serializer.serialize_seq(None)?;
         for b in self.0.bytes() {
             seq.serialize_element(&b)?;
         }
-        seq.end()
+        seq.end()*/
     }
 }
