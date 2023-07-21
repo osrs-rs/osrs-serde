@@ -8,13 +8,15 @@ use serde::{ser::SerializeSeq, Deserialize, Serialize};
 ///
 /// ```
 /// use osrs_serde::U16Smart;
+/// use serde::{Serialize};
 ///
+/// #[derive(Serialize)]
 /// struct Test {
 ///    a: U16Smart
 /// }
 ///
-/// let packet = Test { a: U16Smart(123) };
-/// assert_eq!(packet.a.0, 123);
+/// let packet = Test { a: U16Smart(234) };
+/// assert_eq!(bincode::serialize(&packet).unwrap(), [234,128]);
 /// ```
 #[derive(Debug, Deserialize)]
 pub struct U16Smart(pub u16);
