@@ -11,11 +11,11 @@ use serde::{ser::SerializeSeq, Deserialize, Serialize};
 /// use serde::{Serialize};
 ///
 /// #[derive(Serialize)]
-/// struct Test {
+/// struct TestU16Smart {
 ///    a: U16Smart
 /// }
 ///
-/// let packet = Test { a: U16Smart(234) };
+/// let packet = TestU16Smart { a: U16Smart(234) };
 /// assert_eq!(bincode::serialize(&packet).unwrap(), [234,128]);
 /// ```
 #[derive(Debug, Deserialize)]
@@ -32,7 +32,7 @@ impl Serialize for U16Smart {
 }
 
 #[derive(Debug, Deserialize)]
-struct U8Add(u8);
+pub struct U8Add(pub u8);
 
 impl Serialize for U8Add {
     fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
@@ -41,7 +41,7 @@ impl Serialize for U8Add {
 }
 
 #[derive(Debug, Deserialize)]
-struct U16Le(u16);
+pub struct U16Le(u16);
 
 // TODO: Swap whole impl to use big endian and then use "to_le_bytes" here instead
 // Serialize the u16 as big endian
@@ -52,7 +52,7 @@ impl Serialize for U16Le {
 }
 
 #[derive(Debug, Deserialize)]
-struct I32IME(i32);
+pub struct I32IME(i32);
 
 // TODO
 // Serialize the u16 as big endian
@@ -63,24 +63,26 @@ impl Serialize for I32IME {
     }
 }
 
-#[derive(Debug, Deserialize, Serialize)]
-struct I32(i32);
-
-#[derive(Debug, Serialize, Deserialize)]
-struct Test {
-    a: I32,
-    b: i16,
-    s: String,
-    c: U8Add,
-    smart_u16_1: U16Smart,
-    smart_u16_2: U16Smart,
-    u16_le: U16Le,
-    i32_ime: I32IME,
-}
-
-// TODO: Check if this impl is even necessary, default may handle it
+/// Test StringCp1252
+///
+/// # Examples
+///
+/// Serialize a struct with a StringCp1252
+///
+/// ```
+/// use osrs_serde::StringCp1252;
+/// use serde::{Serialize};
+///
+/// #[derive(Serialize)]
+/// struct TestStringCp1252 {
+///   a: StringCp1252
+/// }
+///
+/// let packet = TestStringCp1252 { a: StringCp1252("Hello World!".to_string()) };
+/// assert_eq!(bincode::serialize(&packet).unwrap(), [12, 0, 0, 0, 0, 0, 0, 0,72,101,108,108,111,32,87,111,114,108,100,33]);
+/// ```
 #[derive(Debug, Deserialize)]
-struct StringCp1252(String);
+pub struct StringCp1252(pub String);
 
 impl Serialize for StringCp1252 {
     fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
